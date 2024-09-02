@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+</head>
+
+<body>
+    <h2>Admin Dashboard</h2>
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Score</th>
+                <th>Edit Score</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+    <script>
+        fetch('/students')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('studentTable').getElementsByTagName('tbody')[0];
+                data.forEach(student => {
+                    let row = tableBody.insertRow();
+                    row.insertCell(0).innerText = student.username;
+
+
+                    let scoreCell = row.insertCell(1);
+                    scoreCell.contentEditable = true;
+                    scoreCell.innerText = student.score;
+
+
+                    let editCell = row.insertCell(2);
+                    let saveButton = document.createElement('button');
+                    saveButton.innerText = 'Save';
+                    saveButton.addEventListener('click', function () {
+                        const newScore = scoreCell.innerText;
+                        updateScore(student.id, newScore);
+                    });
+                    editCell.appendChild(saveButton);
+                });
+            })
+            .catch(error => console.error('Error fetching student data:', error));
+
+        function updateScore(userId, newScore) {
+            fetch('/update-score', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `userId=${userId}&newScore=${newScore}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Score updated successfully');
+
+                    } else {
+                        alert('Failed to update score');
+                    }
+                })
+                .catch(error => console.error('Error updating score:', error));
+        }
+    </script>
+
+</body>
+
+</html>
