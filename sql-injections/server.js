@@ -107,3 +107,6 @@ app.post("/login-sanitized", async (req, res) => {
 app.listen(port, () => {
   console.log("app running on", port);
 });
+
+// example sql injections: admin' --, admin' #, admin'/*, admin' or '1'='1, admin' --, admin' #, admin'/*, admin' or '1'='1
+// example sql injections as first user who is always admin: ' or 1=1 --, ' or 1=1 #, ' or 1=1 /*, ' or 1=1 or '1'='1
